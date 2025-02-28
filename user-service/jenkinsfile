@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/hamzcheeze/microservice-app.git'
+                git 'https://github.com/hamzcheeze/microservice-app/tree/main/user-service.git'
             }
         }
 
@@ -23,8 +23,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub', url: '']) {
-                    sh 'docker tag user-service YOUR_DOCKER_USERNAME/user-service:latest'
-                    sh 'docker push YOUR_DOCKER_USERNAME/user-service:latest'
+                    sh 'docker tag user-service hamzcheeze/user-service:latest'
+                    sh 'docker push hamzcheeze/user-service:latest'
                 }
             }
         }
