@@ -4,19 +4,19 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/hamzcheeze/microservice-app.git'
+                git branch: 'main', url: 'https://github.com/hamzcheeze/microservice-app.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t user-service .'
+                sh 'cd user-service && docker build -t user-service .'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'npx jest'
+                sh 'cd user-service && npx jest'
             }
         }
 
@@ -31,7 +31,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f k8s/deployment.yaml'
+                sh 'kubectl apply -f user-service/k8s/deployment.yaml'
             }
         }
     }
