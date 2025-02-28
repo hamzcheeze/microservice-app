@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/hamzcheeze/microservice-app.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t user-service .'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npx jest'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withDockerRegistry([credentialsId: 'docker-hub', url: '']) {
+                    sh 'docker tag user-service YOUR_DOCKER_USERNAME/user-service:latest'
+                    sh 'docker push YOUR_DOCKER_USERNAME/user-service:latest'
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f k8s/deployment.yaml'
+            }
+        }
+    }
+}
